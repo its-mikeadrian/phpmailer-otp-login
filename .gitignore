@@ -1,7 +1,8 @@
 # ---- SteelSync Login App: Git Ignore ----
 # Purpose: Keep secrets and local artifacts out of git
 
-
+# vendors
+ /vendor
 # Environment and secrets
 .env
 .env.*
