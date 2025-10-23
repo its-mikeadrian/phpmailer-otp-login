@@ -13,13 +13,12 @@ if (!empty($_SESSION['auth_user_id'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SteelSync</title>
+    <title>Login Template</title>
     <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/custom.css">
 </head>
 
 <body class="bg-light">
-    <!-- navbar removed -->
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-5">
@@ -50,7 +49,7 @@ if (!empty($_SESSION['auth_user_id'])) {
                             </div>
                             <div class="form-check mb-3">
                                 <input class="form-check-input" type="checkbox" value="1" id="remember_me" name="remember_me">
-                                <label class="form-check-label" for="remember_me">Remember me for 30 days</label>
+                                <label class="form-check-label" for="remember_me">Remember me</label>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>

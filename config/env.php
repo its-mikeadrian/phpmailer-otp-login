@@ -1,9 +1,7 @@
 <?php
-// Environment loader and secret helper for SteelSync
 
 use Dotenv\Dotenv;
 
-// Ensure Composer autoload is loaded
 if (!class_exists(Dotenv::class)) {
     $autoloadLocal = __DIR__ . '/vendor/autoload.php';
     $autoloadParent = __DIR__ . '/../vendor/autoload.php';
@@ -21,14 +19,12 @@ if (!function_exists('loadEnv')) {
         if ($loaded) {
             return;
         }
-        // Load .env from project root (parent of config directory)
         $envPath = dirname(__DIR__);
         if (is_dir($envPath)) {
             try {
                 $dotenv = Dotenv::createImmutable($envPath);
                 $dotenv->safeLoad();
             } catch (Throwable $e) {
-                // Silently skip if .env cannot be loaded
             }
         }
         $loaded = true;
@@ -48,17 +44,12 @@ if (!function_exists('env_get')) {
 }
 
 if (!function_exists('decrypt_secret')) {
-    /**
-     * Decrypt a base64-encoded ciphertext using AES-256-CBC.
-     * The key should come from a secure OS-level env var (e.g., STEELSYNC_MASTER_KEY), not from .env.
-     * IV may be provided via env var (SMTP_IV) as base64; if not set, decryption fails safely.
-     */
     function decrypt_secret(?string $ciphertext, ?string $key = null, ?string $iv = null): ?string
     {
         if (!$ciphertext) {
             return null;
         }
-        $key = $key ?? env_get('STEELSYNC_MASTER_KEY'); // OS-level env var expected
+        $key = $key ?? env_get('LOGIN_MASTER_KEY');
         $iv = $iv ?? env_get('SMTP_IV');
         if (!$key || !$iv) {
             return null;
@@ -74,13 +65,9 @@ if (!function_exists('decrypt_secret')) {
 }
 
 if (!function_exists('encrypt_secret')) {
-    /**
-     * Encrypt a plaintext using AES-256-CBC and return base64 ciphertext.
-     * Requires STEELSYNC_MASTER_KEY (OS-level) and SMTP_IV (base64) to be set.
-     */
     function encrypt_secret(string $plaintext, ?string $key = null, ?string $iv = null): ?string
     {
-        $key = $key ?? env_get('STEELSYNC_MASTER_KEY');
+        $key = $key ?? env_get('LOGIN_MASTER_KEY');
         $iv = $iv ?? env_get('SMTP_IV');
         if (!$key || !$iv) {
             return null;

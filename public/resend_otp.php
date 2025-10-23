@@ -39,27 +39,24 @@ $maxSendsWindowMin = 15;
 $maxSendsCount = 5;
 
 // Check last send time
-$lastStmt = $conn->prepare('SELECT created_at FROM login_otp WHERE user_id = ? ORDER BY id DESC LIMIT 1');
+$lastStmt = $conn->prepare('SELECT created_at, TIMESTAMPDIFF(SECOND, created_at, NOW()) AS elapsed FROM login_otp WHERE user_id = ? ORDER BY id DESC LIMIT 1');
 $lastStmt->bind_param('i', $userId);
 $lastStmt->execute();
 $lastRes = $lastStmt->get_result();
 $lastRow = $lastRes ? $lastRes->fetch_assoc() : null;
 $lastStmt->close();
 
-$now = time();
-if ($lastRow) {
-    $lastTs = strtotime($lastRow['created_at']);
-    if ($lastTs !== false) {
-        $elapsed = $now - $lastTs;
-        if ($elapsed < $minIntervalSec) {
-            $_SESSION['error'] = 'Please wait ' . ($minIntervalSec - $elapsed) . ' seconds before requesting another code.';
-            header('Location: verify_otp.php');
-            exit;
-        }
+if ($lastRow && isset($lastRow['elapsed'])) {
+    $elapsed = (int) $lastRow['elapsed'];
+    $elapsed = max(0, $elapsed); // clamp in case of future timestamps
+    $remaining = $minIntervalSec - $elapsed;
+    if ($remaining > 0) {
+        $_SESSION['error'] = 'Please wait ' . $remaining . ' seconds before requesting another code.';
+        header('Location: verify_otp.php');
+        exit;
     }
 }
 
-// Check sends in window
 $windowStmt = $conn->prepare('SELECT COUNT(*) AS cnt FROM login_otp WHERE user_id = ? AND created_at >= DATE_SUB(NOW(), INTERVAL ? MINUTE)');
 $windowStmt->bind_param('ii', $userId, $maxSendsWindowMin);
 $windowStmt->execute();

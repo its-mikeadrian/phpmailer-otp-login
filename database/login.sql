@@ -1,6 +1,3 @@
-
-
--- Users table
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(50) NOT NULL,
@@ -12,7 +9,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `uniq_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Login OTP table
 CREATE TABLE IF NOT EXISTS `login_otp` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,
@@ -29,7 +25,6 @@ CREATE TABLE IF NOT EXISTS `login_otp` (
   CONSTRAINT `fk_login_otp_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Account lockout table
 CREATE TABLE IF NOT EXISTS `login_attempts` (
   `user_id` INT UNSIGNED NOT NULL,
   `failed_count` INT UNSIGNED NOT NULL DEFAULT 0,
@@ -40,7 +35,6 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
   CONSTRAINT `fk_attempts_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Server-side session storage
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` VARCHAR(128) NOT NULL,
   `user_id` INT UNSIGNED NULL,
@@ -56,7 +50,6 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   CONSTRAINT `fk_sessions_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Persistent login tokens (Remember Me)
 CREATE TABLE IF NOT EXISTS `remember_tokens` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,

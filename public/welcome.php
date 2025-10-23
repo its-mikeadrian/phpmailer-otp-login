@@ -19,7 +19,6 @@ if (!isset($_SESSION['auth_user_id'])) {
 </head>
 
 <body class="bg-light">
-    <!-- navbar removed -->
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-6">

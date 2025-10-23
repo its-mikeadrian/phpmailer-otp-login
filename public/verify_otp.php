@@ -15,6 +15,21 @@ $email = isset($_SESSION['pending_email']) ? $_SESSION['pending_email'] : '';
 
 $feedback = '';
 
+// Compute resend cooldown remaining seconds (server-side) using DB time to avoid TZ mismatch
+$cooldownRemaining = 0;
+$cooldownWindow = 60; // seconds
+$cooldownStmt = $conn->prepare("SELECT TIMESTAMPDIFF(SECOND, created_at, NOW()) AS elapsed FROM login_otp WHERE user_id = ? AND is_used = 0 ORDER BY id DESC LIMIT 1");
+$cooldownStmt->bind_param('i', $userId);
+$cooldownStmt->execute();
+$cooldownRes = $cooldownStmt->get_result();
+$cooldownRow = $cooldownRes ? $cooldownRes->fetch_assoc() : null;
+$cooldownStmt->close();
+if ($cooldownRow && isset($cooldownRow['elapsed'])) {
+    $elapsed = (int) $cooldownRow['elapsed'];
+    if ($elapsed < 0) { $elapsed = 0; }
+    $cooldownRemaining = max(0, $cooldownWindow - $elapsed);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // CSRF validation
     if (!csrf_validate()) {
@@ -125,7 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <form method="POST" action="resend_otp.php" class="mt-2">
                             <?php echo csrf_input(); ?>
-                            <button type="submit" class="btn btn-link p-0">Resend OTP</button>
+                            <button type="submit" id="resendBtn" class="btn btn-link p-0" <?php echo ($cooldownRemaining > 0) ? 'disabled' : ''; ?>>Resend OTP</button>
+                            <div>
+                                <small id="resendCountdown" data-remaining="<?php echo (int)$cooldownRemaining; ?>" class="text-muted" style="<?php echo ($cooldownRemaining > 0) ? '' : 'display:none;'; ?>">
+                                    Resend available in <?php echo (int)$cooldownRemaining; ?> seconds
+                                </small>
+                            </div>
                         </form>
 
                         <div class="mt-3">
@@ -136,6 +156,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('resendBtn');
+        var countdownEl = document.getElementById('resendCountdown');
+        var remaining = 0;
+        if (countdownEl) {
+            var d = countdownEl.getAttribute('data-remaining');
+            remaining = parseInt(d || '0', 10);
+            if (isNaN(remaining) || remaining < 0) remaining = 0;
+        }
+
+        function render() {
+            if (!btn || !countdownEl) return;
+            if (remaining > 0) {
+                btn.setAttribute('disabled', 'disabled');
+                countdownEl.style.display = '';
+                countdownEl.textContent = 'Resend available in ' + remaining + ' seconds';
+            } else {
+                btn.removeAttribute('disabled');
+                countdownEl.style.display = 'none';
+            }
+        }
+
+        render();
+        if (remaining > 0) {
+            var timer = setInterval(function () {
+                remaining = remaining - 1;
+                if (remaining <= 0) {
+                    remaining = 0;
+                    clearInterval(timer);
+                }
+                render();
+            }, 1000);
+        }
+    });
+    </script>
 </body>
 
 </html>
