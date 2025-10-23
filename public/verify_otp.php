@@ -17,7 +17,7 @@ $feedback = '';
 
 // Compute resend cooldown remaining seconds (server-side) using DB time to avoid TZ mismatch
 $cooldownRemaining = 0;
-$cooldownWindow = 60; // seconds
+$cooldownWindow = 60; // resend cooldown seconds
 $cooldownStmt = $conn->prepare("SELECT TIMESTAMPDIFF(SECOND, created_at, NOW()) AS elapsed FROM login_otp WHERE user_id = ? AND is_used = 0 ORDER BY id DESC LIMIT 1");
 $cooldownStmt->bind_param('i', $userId);
 $cooldownStmt->execute();
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } elseif ($expiresTs !== false && $expiresTs < $now) {
                     $feedback = 'OTP has expired. Please login again to request a new code.';
                 } elseif (!password_verify($otpInput, $otpRow['otp'])) {
-                    // Increment attempt count
+                  
                     $attempts = (int) $otpRow['attempt_count'] + 1;
                     $upd = $conn->prepare('UPDATE login_otp SET attempt_count = ? WHERE id = ?');
                     $upd->bind_param('ii', $attempts, $otpRow['id']);
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $upd->close();
                     $feedback = 'Incorrect OTP. Please try again.';
                 } else {
-                    // Mark used and finalize login
+              
                     $upd = $conn->prepare('UPDATE login_otp SET is_used = 1 WHERE id = ?');
                     $upd->bind_param('i', $otpRow['id']);
                     $upd->execute();

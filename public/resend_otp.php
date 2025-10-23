@@ -38,7 +38,6 @@ $minIntervalSec = 60;
 $maxSendsWindowMin = 15;
 $maxSendsCount = 5;
 
-// Check last send time
 $lastStmt = $conn->prepare('SELECT created_at, TIMESTAMPDIFF(SECOND, created_at, NOW()) AS elapsed FROM login_otp WHERE user_id = ? ORDER BY id DESC LIMIT 1');
 $lastStmt->bind_param('i', $userId);
 $lastStmt->execute();
@@ -48,7 +47,7 @@ $lastStmt->close();
 
 if ($lastRow && isset($lastRow['elapsed'])) {
     $elapsed = (int) $lastRow['elapsed'];
-    $elapsed = max(0, $elapsed); // clamp in case of future timestamps
+    $elapsed = max(0, $elapsed);
     $remaining = $minIntervalSec - $elapsed;
     if ($remaining > 0) {
         $_SESSION['error'] = 'Please wait ' . $remaining . ' seconds before requesting another code.';
@@ -91,15 +90,15 @@ $ins->close();
 try {
     $mail = new PHPMailer(true);
     configureMailer($mail);
-    applyFromAddress($mail, 'SteelSync Login');
+    applyFromAddress($mail, 'Login');
     $mail->addAddress($email, $username);
-    $mail->Subject = 'Your SteelSync Login OTP (Resent)';
+    $mail->Subject = 'Your Login OTP (Resent)';
     $mail->isHTML(true);
     $mail->Body = '<p>Hi ' . htmlspecialchars($username) . ',</p>' .
         '<p>Your one-time password (OTP) is: <strong>' . htmlspecialchars($otp) . '</strong></p>' .
         '<p>This code will expire in 5 minutes.</p>' .
         '<p>If you did not initiate this, you can ignore this message.</p>';
-    $mail->AltBody = "Your SteelSync OTP is: $otp (expires in 5 minutes)";
+    $mail->AltBody = "Your OTP is: $otp (expires in 5 minutes)";
     $mail->send();
     $_SESSION['success'] = 'A new OTP has been sent to your email.';
 } catch (Throwable $e) {
