@@ -1,8 +1,7 @@
 # ---- SteelSync Login App: Git Ignore ----
 # Purpose: Keep secrets and local artifacts out of git
 
-# vendors
- /vendor
+
 # Environment and secrets
 .env
 .env.*
@@ -45,3 +44,6 @@ Thumbs.db
 # Built assets (if you add a build step)
 public/assets/dist/
 public/assets/build/
+
+# Composer dependencies
+vendor/
