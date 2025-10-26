@@ -55,7 +55,7 @@ unset($_SESSION['old'], $_SESSION['errors']);
                                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required value="<?php echo htmlspecialchars(isset($errors['confirm_password']) ? '' : ($old['confirm_password'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                 <label for="confirm_password">Confirm Password</label>
                             </div>
-                            <button type="submit" class="btn btn-success w-100">Create Account</button>
+                            <button type="submit" class="btn btn-create-account w-100">Create Account</button>
                         </form>
                         <div class="mt-3 text-center">
                             <a href="index.php">Already have an account? Login</a>

@@ -2,16 +2,39 @@
 .form-control:focus:not(.is-invalid):not(.is-valid),
 .form-select:focus:not(.is-invalid):not(.is-valid),
 textarea.form-control:focus:not(.is-invalid):not(.is-valid) {
-  border-color: #ced4da !important;
-  /* Bootstrap's default neutral border */
-  box-shadow: none !important;
-  /* Remove glow */
-  outline: none !important;
-  /* Remove focus outline */
+  border-color: #ced4da !important; /* Bootstrap's default neutral border */
+  box-shadow: none !important; /* Remove glow */
+  outline: none !important; /* Remove focus outline */
 }
 
 /* Also remove checkbox/radio focus glow */
 .form-check-input:focus {
   box-shadow: none !important;
   outline: none !important;
+}
+
+/* Create Account button: exact Bootstrap blue #0d6efd */
+.btn-create-account {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+}
+.btn-create-account:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+  color: #fff;
+}
+.btn-create-account:focus,
+.btn-create-account:active {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+  color: #fff;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+.btn-create-account.disabled,
+.btn-create-account:disabled {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+  opacity: 0.65;
 }

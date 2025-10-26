@@ -30,18 +30,44 @@ Contributions are welcome! Feel free to submit pull requests or open issues to h
 - 🧠 “Remember Me” with token rotation & hijack protection
 - ⚙️ Simple `.env` config with optional encrypted secrets
 
-## 🚀 Installation (XAMPP on Windows)
-- Install XAMPP from `https://www.apachefriends.org/` and ensure PHP 8.2+
-- Place the project in `C:\xampp\htdocs\`
-- Start XAMPP Control Panel and start `Apache` and `MySQL`
-- Open `http://localhost/phpmyadmin` and create DB `otp` (utf8mb4)
-- Import schema: phpMyAdmin → `otp` → Import → `database/login.sql``
-- Access app at `http://localhost/login/public/`
+## 🚀 Installation
+1. **Download and Install XAMPP and ensure PHP 8.2+**:
+   - [XAMPP Download](https://www.apachefriends.org/index.html)
+   - Follow the installation instructions for your OS.
 
-## 🚀 Installation (Composer on Windows)
-- Install Composer for Windows: download `Composer-Setup.exe` from `https://getcomposer.org/` and let it detect `php.exe` (usually `C:\xampp\php\php.exe`). Verify just type `composer --version` in PowerShell.
-- In the project root, install dependencies:
-  - on terminal or powershell : first type `cd C:\xampp\htdocs\phpmailer-otp-login` hit enter then type `composer install` then enter
+2. **Clone or Download the Repository**:
+   - Use Git:
+     ```bash
+     git clone <repository-url>
+     ```
+   - Or download and extract the ZIP file.
+
+3. **Copy Project Files to XAMPP**:
+   - Copy the files to the `htdocs` directory of XAMPP (default location: `C:\xampp\htdocs\`).
+
+4. **Open any code editor (e.g, Visual Studio Code)**:
+   - create new file '.env' it should be placed on the project root "C:\xampp\htdocs\phpmailer-otp-login" .
+   - Check the .env configuration below for the instruction
+
+4. ** Create Gmail SMTP for SMTP_PASSWORD (App Password)**:
+   - Enable 2-Step Verification in your Google Account: `https://myaccount.google.com/security` → 2-Step Verification → Turn On
+   - Then go to [Gmail Security app](https://myaccount.google.com/apppasswords?pli=1&rapt=AEjHL4P5hvEUyT81E6ElyOR9oYJ5dgxOqsDeQEo7xY2OvKAyBqWZzGjU_8gkU7C823w7v98q6Hube3TJxBOB1VCbe-dHIeA20uGyDDj4ngdWTqjkgi8TWeU) enter an app name (e.g, login) then click create after that a 16-character password wil be shown just copy it and put it on `.env` settings insert it on SMTP_PASSWORD='insert here"
+   
+4. **Composer and Dependencies**:
+   - Install Composer for Windows: download `Composer-Setup.exe` from `https://getcomposer.org/download/` and let it detect `php.exe` (usually `C:\xampp\php\php.exe`). Verify just type `composer --version` in PowerShell.
+   - In the project root, install dependencies: on terminal or powershell : first type `cd C:\xampp\htdocs\phpmailer-otp-login` to go to the project root and hit enter then type `composer install` then enter
+   - Then check if the dependencies installation is success by checking if the vendor folder is already placed on the project root
+
+6. **Start the XAMPP Server**:
+   - Open the XAMPP and start `Apache` and `MySQL`
+   
+4. **Set Up Database**:
+   - Open your browser and go to `http://localhost/phpmyadmin`.
+   - Create a database and name it "otp".
+   - Import the provided SQL file its placed on `phpmailer-otp-login\database ` login.sql.
+
+7. **Access the Application**:
+   - Open your browser and go to `http://localhost/<project-folder-name>`.
 
 ## 🔧 .env Configuration
 Create `.env` at project root:
@@ -84,11 +110,3 @@ DB_USERNAME=root
 DB_PASSWORD=
 DB_NAME=otp
 ```
-
-## 📫 Gmail SMTP (App Password)
-- Use an App Password (recommended) or OAuth.
-- Steps to create an App Password:
-  - Enable 2-Step Verification in your Google Account: `https://myaccount.google.com/security` → 2-Step Verification → Turn On
-  - Create an App Password: Security → App passwords → Select app "Mail" and device "Windows Computer" (or "Other") → Generate
-  - Copy the 16-character app password (no spaces)
-  - Use these `.env` settings insert it on SMTP_PASSWORD='insert here' :
