@@ -19,6 +19,7 @@ config/*.local.php
 config/*.secrets.php
 config/*.private.php
 
+
 # Logs, cache, temp
 *.log
 *.cache
